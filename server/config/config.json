@@ -1,0 +1,34 @@
+{
+  "development": {
+    "username": "raghul",
+    "password": "RefexAdmin@123",
+    "database": "refex_db_23122025",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql",
+    "logging": false,
+    "define": {
+      "underscored": true
+    }
+  },
+  "test": {
+    "username": "raghul",
+    "password": "RefexAdmin@123",
+    "database": "refex_db_test",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "raghul",
+    "password": "RefexAdmin@123",
+    "database": "refex_db_23122025",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql",
+    "logging": false,
+    "define": {
+      "underscored": true
+    } 
+  }
+}
