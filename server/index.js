@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 const fs = require("fs");
 const cors = require("cors");
+const compression = require("compression");
 const { sequelize } = require("./models");
 const status = require("./helpers/response");
 
@@ -32,6 +33,19 @@ app.use(cors({
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'Accept', 'Origin'],
   optionsSuccessStatus: 200
+}));
+
+// Compression middleware for better performance (gzip)
+app.use(compression({
+  filter: (req, res) => {
+    // Don't compress if client doesn't support it
+    if (req.headers['x-no-compression']) {
+      return false;
+    }
+    // Use compression for all text-based content
+    return compression.filter(req, res);
+  },
+  level: 6 // Compression level (0-9, 6 is a good balance)
 }));
 
 // Middleware - increased limits for large file uploads (200MB)
@@ -541,13 +555,24 @@ app.use('/uploads', (req, res, next) => {
   }
   next();
 }, express.static(path.join(__dirname, 'uploads'), {
-  maxAge: '1d', // Cache for 1 day
+  maxAge: '1y', // Cache for 1 year (31536000 seconds)
   etag: true,
   lastModified: true,
   setHeaders: (res, filePath) => {
-    // Set cache headers for static files
-    if (filePath.endsWith('.pdf')) {
-      res.setHeader('Cache-Control', 'public, max-age=86400');
+    const ext = path.extname(filePath).toLowerCase();
+    const oneYear = 31536000; // 1 year in seconds
+    
+    // Set cache headers for images (PNG, JPG, JPEG, SVG, WebP, GIF, ICO)
+    if (['.png', '.jpg', '.jpeg', '.svg', '.webp', '.gif', '.ico'].includes(ext)) {
+      res.setHeader('Cache-Control', `public, max-age=${oneYear}, immutable`);
+    }
+    // Cache headers for PDFs
+    else if (ext === '.pdf') {
+      res.setHeader('Cache-Control', `public, max-age=${oneYear}`);
+    }
+    // Cache headers for documents
+    else if (['.doc', '.docx', '.xls', '.xlsx'].includes(ext)) {
+      res.setHeader('Cache-Control', 'public, max-age=86400'); // 1 day for documents
     }
   }
 }));
@@ -566,14 +591,34 @@ app.all("/api/v1/*", (req, res) => {
   return status.responseStatus(res, 404, "Endpoint Not Found");
 });
 
+const uploadsPath = path.join(__dirname, "./uploads");
+app.use(express.static(uploadsPath));
+
 // Only serve built client files if SERVE_CLIENT is explicitly set to 'true'
 // When running separately, client will be on port 3000 (Vite dev server)
 const shouldServeClient = process.env.SERVE_CLIENT === 'true';
 const clientPath = path.join(__dirname, "../client/out");
 
 if (shouldServeClient && fs.existsSync(clientPath)) {
-  // Production mode: serve built client files
-  app.use(express.static(clientPath));
+  // Production mode: serve built client files with caching
+  app.use(express.static(clientPath, {
+    maxAge: '1y', // Cache for 1 year
+    etag: true,
+    lastModified: true,
+    setHeaders: (res, filePath) => {
+      const ext = path.extname(filePath).toLowerCase();
+      const oneYear = 31536000; // 1 year in seconds
+      
+      // Cache static assets (JS, CSS, images, fonts) for 1 year
+      if (['.js', '.css', '.png', '.jpg', '.jpeg', '.svg', '.webp', '.gif', '.ico', '.woff', '.woff2', '.ttf', '.eot'].includes(ext)) {
+        res.setHeader('Cache-Control', `public, max-age=${oneYear}, immutable`);
+      }
+      // Don't cache HTML files (they might change)
+      else if (ext === '.html') {
+        res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+      }
+    }
+  }));
   
   // Handle client-side routing - serve index.html for all non-API routes
   app.get("*", (req, res) => {
