@@ -1,0 +1,35 @@
+{
+  "development": {
+    "username": "your_mysql_username",
+    "password": "your_mysql_password",
+    "database": "refex_db",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql",
+    "logging": false,
+    "define": {
+      "underscored": true
+    }
+  },
+  "test": {
+    "username": "your_mysql_username",
+    "password": "your_mysql_password",
+    "database": "refex_db_test",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "your_mysql_username",
+    "password": "your_mysql_password",
+    "database": "refex_db",
+    "host": "localhost",
+    "port": 3306,
+    "dialect": "mysql",
+    "logging": false,
+    "define": {
+      "underscored": true
+    } 
+  }
+}
+
