@@ -162,7 +162,7 @@ export default function BusinessGrid() {
                   <h3 className="text-base md:text-lg font-bold text-gray-900 group-hover:text-[#7DC144] transition-colors duration-300">
                     {business.title}
                   </h3>
-                  <p className="text-xs md:text-sm text-gray-600 leading-relaxed">
+                  <p className="text-sm md:text-base text-gray-600 leading-relaxed">
                     {business.description}
                   </p>
                 </div>

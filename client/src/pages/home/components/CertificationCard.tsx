@@ -24,14 +24,22 @@ export default function CertificationCard({ image, title, showAwardName = true, 
       data-aos-delay={delay}
     >
       {/* Certification Image - Plaque Style */}
-      <div className={`w-full flex ${shouldHideName ? 'flex-grow items-end' : 'items-end'} justify-center pb-0`} style={shouldHideName ? { paddingBottom: 0, minHeight: '300px' } : {}}>
+      <div className={`w-full flex ${shouldHideName ? 'flex-grow items-end' : 'items-end'} justify-center pb-0`} style={isGreatPlaceToWork ? { paddingBottom: 0, minHeight: '180px' } : shouldHideName ? { paddingBottom: 0, minHeight: '240px' } : {}}>
         <div className={`relative w-full max-w-[240px] md:max-w-[220px] flex items-end justify-center bg-transparent rounded-lg ${shouldHideName ? 'h-full' : 'min-h-[220px]'}`}>
           {image ? (
           <img
             src={image}
             alt={title}
-            className={`w-full h-auto ${shouldHideName ? 'max-h-[380px]' : 'max-h-[220px]'} object-contain`}
-            style={shouldHideName ? { 
+            className={`w-full h-auto ${isGreatPlaceToWork ? 'max-h-[200px]' : shouldHideName ? 'max-h-[280px]' : 'max-h-[220px]'} object-contain`}
+            style={isGreatPlaceToWork ? { 
+              marginTop: '0px',
+              marginBottom: '0',
+              objectPosition: 'bottom',
+              alignSelf: 'flex-end',
+              width: '100%',
+              height: 'auto',
+              maxHeight: '200px'
+            } : shouldHideName ? { 
               marginTop: '0px',
               marginBottom: '0',
               objectPosition: 'bottom',

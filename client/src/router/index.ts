@@ -2,6 +2,7 @@ import { useNavigate, useLocation, type NavigateFunction } from "react-router-do
 import { useRoutes } from "react-router-dom";
 import { useEffect } from "react";
 import routes from "./config";
+import { usePageTracking } from "../hooks/usePageTracking";
 
 let navigateResolver: (navigate: ReturnType<typeof useNavigate>) => void;
 
@@ -19,6 +20,9 @@ export function AppRoutes() {
   const element = useRoutes(routes);
   const navigate = useNavigate();
   const location = useLocation();
+  
+  // Track page views on route changes
+  usePageTracking();
   
   useEffect(() => {
     window.REACT_APP_NAVIGATE = navigate;

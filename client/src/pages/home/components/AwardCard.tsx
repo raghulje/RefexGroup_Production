@@ -33,8 +33,13 @@ export default function AwardCard({ image, title, year, recipient, showAwardName
           <img
             src={image}
             alt={title}
-            className={`${shouldHideName ? 'w-full h-auto max-h-[340px]' : 'max-h-full max-w-full'} object-contain drop-shadow-lg`}
-            style={shouldHideName ? { 
+            className={`${isGreatPlaceToWork ? 'w-full h-auto max-h-[200px]' : shouldHideName ? 'w-full h-auto max-h-[280px]' : 'max-h-full max-w-full'} object-contain drop-shadow-lg`}
+            style={isGreatPlaceToWork ? { 
+              marginTop: '0px',
+              marginBottom: '0',
+              width: '100%',
+              maxHeight: '200px'
+            } : shouldHideName ? { 
               marginTop: '0px',
               marginBottom: '0',
               width: '100%'

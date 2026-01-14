@@ -198,7 +198,7 @@ export default function HeroSlider() {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 items-center">
                   {/* Left: Text Content */}
                   <div className="text-white space-y-4 sm:space-y-6 z-10">
-                    <p className="text-[0.7rem] sm:text-xs font-semibold tracking-widest uppercase text-[#7DC144]">
+                    <p className="text-base font-semibold tracking-widest uppercase text-[#7DC144]">
                       {slide.subtitle}
                     </p>
                     <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.125rem] font-bold leading-tight">
@@ -235,7 +235,7 @@ export default function HeroSlider() {
                           Celebrating<br />
                           <span className="text-[#7DC144]">23 years of Excellence</span>
                         </h3>
-                        <p className="text-xs leading-relaxed text-gray-300">
+                        <p className="text-base leading-relaxed text-gray-300">
                           Refex's journey of excellence began over two decades ago, built on a foundation of learning, resilience, and agility. From Refrigerant Gases to Ash Utilization & Coal Handling, Renewables, MedTech, Mobility, and Pharmaceuticals, we've continually expanded our horizons.
                         </p>
                       </div>
@@ -301,7 +301,7 @@ export default function HeroSlider() {
                 Celebrating<br />
                 <span className="text-[#7DC144]">23 years of Excellence</span>
               </h3>
-              <p className="text-xs sm:text-sm leading-relaxed text-gray-300">
+              <p className="text-base leading-relaxed text-gray-300">
                 Refex's journey of excellence began over two decades ago, built on a foundation of learning, resilience, and agility. From Refrigerant Gases to Ash Utilization & Coal Handling, Renewables, MedTech, Mobility, and Pharmaceuticals, we've continually expanded our horizons.
               </p>
             </div>

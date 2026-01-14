@@ -150,7 +150,7 @@ export default function AboutSection() {
               )}
               
               {/* About Title - Centered on mobile, left-aligned on desktop */}
-              <p className="text-black font-extrabold text-base md:text-lg text-center lg:text-left">{content.title}</p>
+              <h2 className="text-black font-extrabold text-base md:text-lg text-center lg:text-left">{content.title}</h2>
               
               {/* Logo and Tagline - Stacked on mobile, side-by-side on desktop */}
               <div className="flex flex-col lg:flex-row items-center lg:items-center gap-3 lg:gap-0">
