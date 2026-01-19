@@ -35,7 +35,7 @@ export default function AwardCard({ image, title, year, recipient, showAwardName
             alt={title}
             className={`${isGreatPlaceToWork ? 'w-full h-auto max-h-[200px]' : shouldHideName ? 'w-full h-auto max-h-[280px]' : 'max-h-full max-w-full'} object-contain drop-shadow-lg`}
             style={isGreatPlaceToWork ? { 
-              marginTop: '0px',
+              marginTop: '70px',
               marginBottom: '0',
               width: '100%',
               maxHeight: '200px'

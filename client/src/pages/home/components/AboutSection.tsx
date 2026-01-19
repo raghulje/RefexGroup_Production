@@ -194,8 +194,8 @@ export default function AboutSection() {
                     className="relative inline-block px-6 sm:px-8 py-2.5 sm:py-2 border border-slate-600 text-slate-700 rounded-full overflow-hidden text-sm sm:text-base group/btn"
                 >
                   <span className="relative z-10">{content.buttonText}</span>
-                  <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:scale-y-100"></span>
-                  <span className="absolute inset-0 text-white flex items-center justify-center opacity-0 group-hover/btn:opacity-100 transition-opacity duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] z-10">
+                  <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-500 ease-out group-hover/btn:scale-y-100" style={{ willChange: 'transform' }}></span>
+                  <span className="absolute inset-0 text-white flex items-center justify-center opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500 ease-out z-10" style={{ willChange: 'opacity' }}>
                     {content.buttonText}
                   </span>
                 </Link>

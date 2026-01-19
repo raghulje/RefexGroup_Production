@@ -137,7 +137,8 @@ export default function BusinessGrid() {
             {businesses.map((business, index) => (
             <div
               key={business.id}
-              className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 flex flex-col"
+              className="group bg-white rounded-xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-500 ease-out flex flex-col"
+              style={{ willChange: 'box-shadow' }}
               data-aos="fade-up"
               data-aos-delay={index * 100}
             >
@@ -146,7 +147,8 @@ export default function BusinessGrid() {
                   <img
                     src={business.image}
                     alt={business.title}
-                    className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-700"
+                    className="w-full h-full object-cover object-top group-hover:scale-110 transition-transform duration-500 ease-out"
+                    style={{ willChange: 'transform' }}
                     onError={(e) => {
                       (e.target as HTMLImageElement).style.display = 'none';
                     }}
@@ -170,14 +172,32 @@ export default function BusinessGrid() {
                   <Link
                     to={business.link}
                     className="inline-flex items-center justify-center group/button cursor-pointer"
+                    data-ga-track="button"
+                    data-ga-label="Explore More"
+                    data-ga-location={`Business Card: ${business.title}`}
+                    data-ga-destination={business.link}
                   >
                     <div 
-                    style={{marginTop: '-45px', transition: 'width 1300ms cubic-bezier(0.16, 1, 0.3, 1), padding 1300ms cubic-bezier(0.16, 1, 0.3, 1), height 1300ms cubic-bezier(0.16, 1, 0.3, 1)'}}
+                    style={{
+                      marginTop: '-45px', 
+                      transition: 'width 500ms cubic-bezier(0.4, 0, 0.2, 1), padding 500ms cubic-bezier(0.4, 0, 0.2, 1), height 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+                      willChange: 'width, padding, height'
+                    }}
                     className="relative inline-flex items-center justify-center gap-2 bg-[#7DC144] text-white font-semibold rounded-full w-12 h-12 group-hover/button:w-auto group-hover/button:px-6 group-hover/button:py-2.5 overflow-hidden">
-                      <span style={{transition: 'opacity 1300ms cubic-bezier(0.16, 1, 0.3, 1), width 1300ms cubic-bezier(0.16, 1, 0.3, 1), margin-right 1300ms cubic-bezier(0.16, 1, 0.3, 1)'}} className="opacity-0 w-0 overflow-hidden whitespace-nowrap group-hover/button:opacity-100 group-hover/button:w-[110px] group-hover/button:mr-2">
+                      <span style={{
+                        transition: 'opacity 500ms cubic-bezier(0.4, 0, 0.2, 1), width 500ms cubic-bezier(0.4, 0, 0.2, 1), margin-right 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+                        willChange: 'opacity, width, margin-right'
+                      }} className="opacity-0 w-0 overflow-hidden whitespace-nowrap group-hover/button:opacity-100 group-hover/button:w-[110px] group-hover/button:mr-2">
                         Explore More
                       </span>
-                      <i style={{transition: 'opacity 1300ms cubic-bezier(0.16, 1, 0.3, 1), transform 1300ms cubic-bezier(0.16, 1, 0.3, 1)', position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%, -50%)'}} className="ri-arrow-right-line text-lg flex-shrink-0 group-hover/button:opacity-0 group-hover/button:pointer-events-none"></i>
+                      <i style={{
+                        transition: 'opacity 500ms cubic-bezier(0.4, 0, 0.2, 1), transform 500ms cubic-bezier(0.4, 0, 0.2, 1)',
+                        position: 'absolute', 
+                        left: '50%', 
+                        top: '50%', 
+                        transform: 'translate(-50%, -50%)',
+                        willChange: 'opacity, transform'
+                      }} className="ri-arrow-right-line text-lg flex-shrink-0 group-hover/button:opacity-0 group-hover/button:pointer-events-none"></i>
                     </div>
                   </Link>
                 </div>

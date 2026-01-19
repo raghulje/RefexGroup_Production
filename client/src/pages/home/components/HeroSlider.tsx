@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { heroSlidesService, pagesService } from '../../../services/apiService';
 import { resolveImageUrl } from '../../../config/env';
+import { trackVideoPlay, trackButtonClick } from '../../../utils/ga4';
 
 // No fallback slides - all must come from CMS
 const fallbackSlides: Slide[] = [];
@@ -23,6 +24,29 @@ export default function HeroSlider() {
   const [slides, setSlides] = useState<Slide[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [preloadedImages, setPreloadedImages] = useState<Set<string>>(new Set());
+
+  // Preload next/previous slide images when slide changes
+  useEffect(() => {
+    if (slides.length === 0) return;
+    
+    const preloadAdjacentSlides = () => {
+      const nextIndex = (currentSlide + 1) % slides.length;
+      const prevIndex = (currentSlide - 1 + slides.length) % slides.length;
+      
+      [nextIndex, prevIndex].forEach(slideIndex => {
+        const slide = slides[slideIndex];
+        if (slide?.image && !preloadedImages.has(slide.image)) {
+          const img = new Image();
+          img.src = slide.image;
+          img.fetchPriority = 'low';
+          setPreloadedImages(prev => new Set(prev).add(slide.image));
+        }
+      });
+    };
+    
+    preloadAdjacentSlides();
+  }, [currentSlide, slides, preloadedImages]);
 
   useEffect(() => {
     const fetchSlides = async () => {
@@ -106,6 +130,42 @@ export default function HeroSlider() {
           
           if (validSlides.length > 0) {
             setSlides(validSlides);
+            
+            // Preload the first slide image immediately with high priority
+            if (validSlides[0]?.image) {
+              const firstSlideImage = validSlides[0].image;
+              
+              // Add preload link to document head for faster loading
+              const existingPreload = document.querySelector(`link[href="${firstSlideImage}"]`);
+              if (!existingPreload) {
+                const preloadLink = document.createElement('link');
+                preloadLink.rel = 'preload';
+                preloadLink.as = 'image';
+                preloadLink.href = firstSlideImage;
+                preloadLink.setAttribute('fetchpriority', 'high');
+                document.head.appendChild(preloadLink);
+              }
+              
+              // Preload using Image object as well
+              const firstImage = new Image();
+              firstImage.src = firstSlideImage;
+              firstImage.fetchPriority = 'high';
+              setPreloadedImages(prev => new Set(prev).add(firstSlideImage));
+              
+              // Preload remaining slides in background after a short delay
+              setTimeout(() => {
+                validSlides.slice(1).forEach((slide, index) => {
+                  setTimeout(() => {
+                    if (slide.image) {
+                      const img = new Image();
+                      img.src = slide.image;
+                      img.fetchPriority = 'low';
+                      setPreloadedImages(prev => new Set(prev).add(slide.image));
+                    }
+                  }, index * 200); // Stagger preloading to avoid blocking
+                });
+              }, 500);
+            }
           } else {
             console.warn('No valid slides found - showing empty state');
             setSlides([]);
@@ -139,6 +199,8 @@ export default function HeroSlider() {
 
   const openVideoModal = () => {
     setShowVideoModal(true);
+    // Track video play
+    trackVideoPlay('Refex Journey Video', 'https://www.youtube.com/watch?v=dQw4w9WgXcQ');
   };
 
   const closeVideoModal = () => {
@@ -149,6 +211,7 @@ export default function HeroSlider() {
     const businessSection = document.getElementById('our-businesses');
     if (businessSection) {
       businessSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      trackButtonClick('Scroll to Business Section', 'Hero Slider', '#our-businesses');
     }
   };
 
@@ -180,15 +243,18 @@ export default function HeroSlider() {
         {slides.map((slide, index) => (
           <div
             key={slide.id}
-            className={`absolute inset-0 transition-opacity duration-1000 ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
+            className={`absolute inset-0 transition-opacity duration-500 ease-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'
               }`}
-            style={{ minHeight: '70vh' }}
+            style={{ minHeight: '70vh', willChange: 'opacity' }}
           >
             <div className="absolute inset-0">
               <img
                 src={slide.image}
                 alt={slide.title}
                 className="w-full h-full object-cover"
+                fetchPriority={index === 0 ? "high" : "low"}
+                loading={index === 0 ? "eager" : "lazy"}
+                decoding={index === 0 ? "sync" : "async"}
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-transparent"></div>
             </div>
@@ -211,6 +277,11 @@ export default function HeroSlider() {
                       <Link
                         to={slide.link}
                         className="inline-block mt-4 sm:mt-6 px-5 sm:px-6 md:px-8 py-2.5 sm:py-3 bg-[#7DC144] hover:bg-[#6ba838] text-white text-sm sm:text-base font-semibold rounded-full transition-all duration-300 cursor-pointer"
+                        data-ga-track="button"
+                        data-ga-label={slide.buttonText || 'Know More'}
+                        data-ga-location="Hero Slider"
+                        data-ga-destination={slide.link}
+                        onClick={() => trackButtonClick(slide.buttonText || 'Know More', 'Hero Slider', slide.link || '')}
                       >
                         {slide.buttonText || 'Know More'}
                       </Link>
@@ -225,6 +296,9 @@ export default function HeroSlider() {
                         onClick={openVideoModal}
                         className="absolute top-6 left-6 w-14 h-14 bg-[#7DC144] rounded-full flex items-center justify-center transition-all duration-300 shadow-xl cursor-pointer z-10 hover:bg-[#6ba838] hover:scale-110 hover:shadow-2xl"
                         aria-label="Play video"
+                        data-ga-track="button"
+                        data-ga-label="Play Video"
+                        data-ga-location="Hero Video Card"
                       >
                         <i className="ri-play-fill text-white text-2xl ml-1"></i>
                       </button>

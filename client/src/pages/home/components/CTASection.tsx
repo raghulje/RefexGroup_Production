@@ -106,6 +106,11 @@ export default function CTASection() {
                   <Link
                     to={cta.linkUrl}
                     className="inline-block border-2 border-white bg-transparent text-white px-6 py-[8.5px] rounded-full font-semibold hover:bg-white hover:text-black hover:-translate-y-2 transition-all duration-500 ease-out whitespace-nowrap cursor-pointer text-sm md:text-base"
+                    style={{ willChange: 'transform, background-color, color' }}
+                    data-ga-track="button"
+                    data-ga-label={cta.linkText}
+                    data-ga-location="Home CTA Section"
+                    data-ga-destination={cta.linkUrl}
                   >
                     {cta.linkText}
                   </Link>

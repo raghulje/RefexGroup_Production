@@ -11,6 +11,7 @@ import CenterOfExcellence from '../../wp-content/uploads/2023/02/Center-of-Excel
 import CareersBg2 from '../../wp-content/uploads/2023/03/Careers-bg-2.jpg';
 import { pagesService, sectionsService, testimonialsService, mediaService, formSubmissionsService } from '../../services/apiService';
 import { getApiBaseUrl } from '../../config/env';
+import { trackFormSubmit } from '../../utils/ga4';
 
 // Import images from esops folder
 const careers1 = new URL('./esops/careers1.png', import.meta.url).href;
@@ -419,6 +420,11 @@ export default function CareersPage() {
 
       // Submit to API
       await formSubmissionsService.submitCareerApplication(submitData);
+
+      // Track form submission
+      trackFormSubmit('career_application', {
+        message: formData.message,
+      });
 
       // Success
       setSubmitMessage({ type: 'success', text: 'Application submitted successfully! We will get back to you soon.' });

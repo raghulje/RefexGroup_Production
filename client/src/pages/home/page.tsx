@@ -1,7 +1,6 @@
 
 import { useEffect } from 'react';
 import AOS from 'aos';
-import 'aos/dist/aos.css';
 import Header from '../../components/feature/Header';
 import Footer from '../../components/feature/Footer';
 import HeroSlider from './components/HeroSlider';
@@ -15,11 +14,8 @@ import CTASection from './components/CTASection';
 export default function HomePage() {
   // Handle smooth scroll to section on hash navigation
   useEffect(() => {
-    AOS.init({
-      duration: 1000,
-      once: true,
-      offset: 100,
-    });
+    // Refresh AOS to detect new elements (AOS already initialized in main.tsx)
+    AOS.refresh();
 
     const hash = window.location.hash;
     if (hash) {

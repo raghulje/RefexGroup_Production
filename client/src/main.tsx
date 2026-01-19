@@ -12,12 +12,15 @@ import { initGA4 } from './utils/ga4'
 initGA4();
 
 AOS.init({
-  duration: 800,
+  duration: 600, // Reduced from 800ms for smoother animations
   once: true,
   offset: 50,
   easing: 'ease-out-cubic',
   delay: 0,
-  anchorPlacement: 'top-bottom'
+  anchorPlacement: 'top-bottom',
+  useClassNames: false, // Better performance
+  disableMutationObserver: false,
+  debounceDelay: 50, // Optimize scroll performance
 })
 
 createRoot(document.getElementById('root')!).render(

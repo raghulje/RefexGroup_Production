@@ -6,6 +6,7 @@ import Footer from '../../components/feature/Footer';
 import ContactHeroBg from '../../wp-content/uploads/2023/02/Contact-Page-Bg.jpg';
 import { pagesService, sectionsService, contactFormService } from '../../services/apiService';
 import { getApiBaseUrl } from '../../config/env';
+import { trackFormSubmit } from '../../utils/ga4';
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -129,6 +130,12 @@ export default function ContactPage() {
       });
 
       if (result) {
+        // Track form submission
+        trackFormSubmit('contact_form', {
+          enquiringFor: formData.enquiringFor,
+          message: formData.message,
+        });
+        
         setSubmitStatus('success');
         setFormData({
           name: '',

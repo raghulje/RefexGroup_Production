@@ -276,11 +276,11 @@ export default function NewsroomSection() {
                 : 'bg-white text-gray-700 border-2 border-black'
             }`}
           >
-            <span className={`relative z-10 ${activeTab === 'press' ? '' : 'group-hover/btn:text-white transition-colors duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]'}`}>
+            <span className={`relative z-10 ${activeTab === 'press' ? '' : 'group-hover/btn:text-white transition-colors duration-500 ease-out'}`} style={{ willChange: 'color' }}>
               Press Releases
             </span>
             {activeTab !== 'press' && (
-              <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:scale-y-100"></span>
+              <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-500 ease-out group-hover/btn:scale-y-100" style={{ willChange: 'transform' }}></span>
             )}
           </button>
           <button
@@ -291,11 +291,11 @@ export default function NewsroomSection() {
                 : 'bg-white text-gray-700 border-2 border-black'
             }`}
           >
-            <span className={`relative z-10 ${activeTab === 'events' ? '' : 'group-hover/btn:text-white transition-colors duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)]'}`}>
+            <span className={`relative z-10 ${activeTab === 'events' ? '' : 'group-hover/btn:text-white transition-colors duration-500 ease-out'}`} style={{ willChange: 'color' }}>
               Events
             </span>
             {activeTab !== 'events' && (
-              <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:scale-y-100"></span>
+              <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-500 ease-out group-hover/btn:scale-y-100" style={{ willChange: 'transform' }}></span>
             )}
           </button>
         </div>
@@ -336,7 +336,8 @@ export default function NewsroomSection() {
                             <img
                               src={item.image}
                               alt={item.title}
-                              className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500"
+                              className="w-full h-full object-cover object-center group-hover:scale-110 transition-transform duration-500 ease-out"
+                              style={{ willChange: 'transform' }}
                               onError={(e) => {
                                 (e.target as HTMLImageElement).style.display = 'none';
                               }}
@@ -404,7 +405,8 @@ export default function NewsroomSection() {
                             <img
                               src={event.image}
                               alt={event.title}
-                              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                              className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-110"
+                              style={{ willChange: 'transform' }}
                               onError={(e) => {
                                 (e.target as HTMLImageElement).style.display = 'none';
                               }}
@@ -457,8 +459,8 @@ export default function NewsroomSection() {
               Visit our Newsroom
               <i className="ri-arrow-right-line ml-2"></i>
             </span>
-            <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:scale-y-100"></span>
-            <span className="absolute inset-0 text-white flex items-center justify-center opacity-0 group-hover/btn:opacity-100 transition-opacity duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] z-10">
+            <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-500 ease-out group-hover/btn:scale-y-100" style={{ willChange: 'transform' }}></span>
+            <span className="absolute inset-0 text-white flex items-center justify-center opacity-0 group-hover/btn:opacity-100 transition-opacity duration-500 ease-out z-10" style={{ willChange: 'opacity' }}>
               Visit our Newsroom
               <i className="ri-arrow-right-line ml-2"></i>
             </span>

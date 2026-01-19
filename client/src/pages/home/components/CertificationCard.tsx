@@ -32,7 +32,7 @@ export default function CertificationCard({ image, title, showAwardName = true, 
             alt={title}
             className={`w-full h-auto ${isGreatPlaceToWork ? 'max-h-[200px]' : shouldHideName ? 'max-h-[280px]' : 'max-h-[220px]'} object-contain`}
             style={isGreatPlaceToWork ? { 
-              marginTop: '0px',
+              marginTop: '30px',
               marginBottom: '0',
               objectPosition: 'bottom',
               alignSelf: 'flex-end',
@@ -40,7 +40,7 @@ export default function CertificationCard({ image, title, showAwardName = true, 
               height: 'auto',
               maxHeight: '200px'
             } : shouldHideName ? { 
-              marginTop: '0px',
+              marginTop: '30px',
               marginBottom: '0',
               objectPosition: 'bottom',
               alignSelf: 'flex-end',

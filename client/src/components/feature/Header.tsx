@@ -182,6 +182,20 @@ export default function Header() {
               if (media?.filePath) {
                 const apiBase = getApiBaseUrl();
                 const newLogo = media.filePath.startsWith('/uploads/') ? `${apiBase}${media.filePath}` : media.filePath;
+                
+                // Preload CMS logo if different from fallback
+                if (newLogo && newLogo !== '/assets/logos/refex-logo.png') {
+                  const existingPreload = document.querySelector(`link[href="${newLogo}"]`);
+                  if (!existingPreload) {
+                    const preloadLink = document.createElement('link');
+                    preloadLink.rel = 'preload';
+                    preloadLink.as = 'image';
+                    preloadLink.href = newLogo;
+                    preloadLink.setAttribute('fetchpriority', 'high');
+                    document.head.appendChild(preloadLink);
+                  }
+                }
+                
                 setHeaderLogo((prevLogo) => prevLogo !== newLogo ? newLogo : prevLogo);
               }
             } catch (e) {
@@ -471,12 +485,16 @@ export default function Header() {
                 src={headerLogo}
                 alt="Refex Group"
                 className="h-full w-auto object-contain"
+                fetchPriority="high"
+                loading="eager"
                 />
               ) : (
                 <img
                   src="/assets/logos/refex-logo.png"
                   alt="Refex Group"
                   className="h-full w-auto object-contain"
+                  fetchPriority="high"
+                  loading="eager"
               />
               )}
             </Link>
@@ -792,6 +810,8 @@ export default function Header() {
                 src={headerLogo || '/assets/logos/refex-logo.png'}
                 alt="Refex Group"
                 className="h-12 w-auto"
+                fetchPriority="high"
+                loading="eager"
                 onError={(e) => {
                   (e.target as HTMLImageElement).src = '/assets/logos/refex-logo.png';
                 }}
@@ -845,6 +865,9 @@ export default function Header() {
                               to={sublink.path}
                               className="block px-4 py-2.5 text-gray-600 hover:text-[#50b848] hover:bg-gray-50 rounded-lg transition-all duration-200 text-sm"
                               onClick={(e) => handleLinkClick(e, sublink.path)}
+                              data-ga-track="link"
+                              data-ga-label={sublink.label}
+                              data-ga-location="Header Navigation"
                             >
                               {sublink.label}
                             </Link>
@@ -857,6 +880,9 @@ export default function Header() {
                       to={link.path}
                       className="block px-4 py-3 text-gray-700 hover:text-[#50b848] hover:bg-gray-50 rounded-lg transition-all duration-200 font-medium"
                       onClick={(e) => handleLinkClick(e, link.path)}
+                      data-ga-track="link"
+                      data-ga-label={link.label}
+                      data-ga-location="Header Navigation"
                     >
                       {link.label}
                     </Link>
