@@ -178,6 +178,7 @@ export const trackDownload = (fileName: string, fileUrl: string) => {
 /**
  * Set up global click tracking for buttons and links
  * This tracks clicks on elements with data-ga-track attributes
+ * This ensures dynamically added elements are tracked automatically
  */
 const setupGlobalClickTracking = () => {
   if (typeof window === 'undefined') return;
@@ -190,6 +191,10 @@ const setupGlobalClickTracking = () => {
     const trackedElement = target.closest('[data-ga-track]') as HTMLElement;
     if (!trackedElement) return;
 
+    // Skip if already handled by explicit onClick handler (prevent duplicate tracking)
+    // This is detected by checking if the event was explicitly prevented
+    if (e.defaultPrevented) return;
+
     const trackType = trackedElement.getAttribute('data-ga-track');
     const trackLabel = trackedElement.getAttribute('data-ga-label') || 
                       trackedElement.textContent?.trim() || 
@@ -200,18 +205,30 @@ const setupGlobalClickTracking = () => {
     // Handle different track types
     if (trackType === 'button' || trackType === 'cta') {
       const destination = (trackedElement as HTMLAnchorElement).href || 
+                         (trackedElement as HTMLLinkElement).getAttribute('to') ||
                          trackedElement.getAttribute('data-ga-destination') || 
                          '';
       trackButtonClick(trackLabel, trackLocation, destination);
     } else if (trackType === 'link') {
-      const href = (trackedElement as HTMLAnchorElement).href || '';
-      const linkType = href.startsWith('http') && !href.includes(window.location.hostname) 
-                       ? 'external' 
-                       : 'internal';
-      trackLinkClick(trackLabel, href, linkType);
+      const href = (trackedElement as HTMLAnchorElement).href || 
+                   (trackedElement as HTMLLinkElement).getAttribute('to') ||
+                   trackedElement.getAttribute('href') || '';
+      const isExternal = href.startsWith('http://') || 
+                         href.startsWith('https://') || 
+                         href.startsWith('mailto:') ||
+                         href.startsWith('tel:') ||
+                         (href.startsWith('http') && !href.includes(window.location.hostname));
+      trackLinkClick(trackLabel, href, isExternal ? 'external' : 'internal');
     } else if (trackType === 'download') {
-      const downloadUrl = (trackedElement as HTMLAnchorElement).href || '';
+      const downloadUrl = (trackedElement as HTMLAnchorElement).href || 
+                         trackedElement.getAttribute('href') ||
+                         '';
       trackDownload(trackLabel, downloadUrl);
+    } else if (trackType === 'video') {
+      const videoUrl = (trackedElement as HTMLAnchorElement).href || 
+                       trackedElement.getAttribute('href') ||
+                       '';
+      trackVideoPlay(trackLabel, videoUrl);
     }
   }, true); // Use capture phase to catch events early
 };

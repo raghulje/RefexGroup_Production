@@ -9,6 +9,7 @@ import YoutubeIcon from '../../pages/svg/footer/youtube.svg';
 import InstagramIcon from '../../pages/svg/footer/instagram.svg';
 import { footerService, socialLinksService, globalSettingsService } from '../../services/apiService';
 import { getApiBaseUrl } from '../../config/env';
+import { trackLinkClick } from '../../utils/ga4';
 
 export default function Footer() {
   const [businessLinks, setBusinessLinks] = useState([
@@ -229,8 +230,9 @@ export default function Footer() {
     };
   }, []);
 
-  // Scroll to top when clicking any link
-  const handleLinkClick = () => {
+  // Handle link clicks with GA4 tracking
+  const handleLinkClick = (url: string, label: string, isExternal: boolean = false) => {
+    trackLinkClick(label, url, isExternal ? 'external' : 'internal');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -242,7 +244,7 @@ export default function Footer() {
         <div className="flex flex-col md:hidden space-y-6">
           {/* Logo - Centered */}
           <div className="flex flex-col items-center">
-            <Link to="/" className="inline-block mb-4" onClick={handleLinkClick}>
+            <Link to="/" className="inline-block mb-4" onClick={() => handleLinkClick('/', 'Footer Logo', false)}>
               <img
                 src={footerLogo}
                 alt="Refex Group"
@@ -263,6 +265,9 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="w-8 h-8 flex items-center justify-center transition-all duration-300 hover:scale-110"
                   aria-label={social.label}
+                  onClick={() => handleLinkClick(social.url, `Social: ${social.label}`, true)}
+                  data-ga-track="link"
+                  data-ga-label={`Social: ${social.label}`}
                 >
                   {typeof social.icon === 'string' ? (
                     <img src={social.icon} alt={social.label} className="w-[25px] h-[25px] object-contain" onError={(e) => {
@@ -326,7 +331,9 @@ export default function Footer() {
                   key={link.path}
                   to={link.path}
                   className="text-[16px] font-bold text-gray-900 block hover:text-[#7cb342] transition-colors duration-300"
-                  onClick={handleLinkClick}
+                  onClick={() => handleLinkClick(link.path, `Footer: ${link.label}`, false)}
+                  data-ga-track="link"
+                  data-ga-label={`Footer: ${link.label}`}
                 >
                   {link.label}
                 </Link>
@@ -338,7 +345,7 @@ export default function Footer() {
         <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-5 lg:gap-6">
           {/* Column 1: Logo & Social Media */}
           <div className="flex flex-col">
-            <Link to="/" className="inline-block mb-3" onClick={handleLinkClick}>
+            <Link to="/" className="inline-block mb-3" onClick={() => handleLinkClick('/', 'Footer Logo', false)}>
               <img
                 src={footerLogo}
                 alt="Refex Group"
@@ -356,6 +363,9 @@ export default function Footer() {
                     rel="noopener noreferrer"
                     className="w-8 h-8 flex items-center justify-center transition-all duration-300 hover:scale-110"
                     aria-label={social.label}
+                    onClick={() => handleLinkClick(social.url, `Social: ${social.label}`, true)}
+                    data-ga-track="link"
+                    data-ga-label={`Social: ${social.label}`}
                   >
                     {typeof social.icon === 'string' ? (
                       <img src={social.icon} alt={social.label} className="w-[25px] h-[25px] object-contain" onError={(e) => {
@@ -384,7 +394,9 @@ export default function Footer() {
                   <Link
                     to={link.path}
                     className="block py-2 text-[16px] text-[#4D5763]  hover:text-[#7cb342] transition-colors duration-300"
-                    onClick={handleLinkClick}
+                    onClick={() => handleLinkClick(link.path, `Footer: ${link.label}`, false)}
+                    data-ga-track="link"
+                    data-ga-label={`Footer: ${link.label}`}
                   >
                     {link.label}
                   </Link>
@@ -402,7 +414,9 @@ export default function Footer() {
                   <Link
                     to={link.path}
                     className="block py-2 text-[16px] text-[#4D5763]  hover:text-[#7cb342] transition-colors duration-300"
-                    onClick={handleLinkClick}
+                    onClick={() => handleLinkClick(link.path, `Footer: ${link.label}`, false)}
+                    data-ga-track="link"
+                    data-ga-label={`Footer: ${link.label}`}
                   >
                     {link.label}
                   </Link>
@@ -419,7 +433,9 @@ export default function Footer() {
                   <Link
                     to={link.path}
                     className="relative text-[16px] text-[#131111]  font-semibold uppercase inline-block overflow-hidden group px-3 py-2 rounded-md"
-                    onClick={handleLinkClick}
+                    onClick={() => handleLinkClick(link.path, `Footer: ${link.label}`, false)}
+                    data-ga-track="link"
+                    data-ga-label={`Footer: ${link.label}`}
                   >
                     <span className="relative z-10 transition-colors duration-300">{link.label}</span>
                     <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-[#7dc144] group-hover:w-full transition-all duration-300 ease-out"></span>
@@ -437,6 +453,8 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center gap-[8px] text-[18px] font-bold text-[#131111]  hover:text-[#7cb342] transition-colors duration-300"
+                  onClick={() => handleLinkClick(`https://wa.me/${complaintPhone.replace(/\D/g, '')}`, `Footer: Complaint Phone`, true)}
+                  data-ga-track="link"
                 >
                   <img src={PhoneIcon} alt="Phone" className="w-[24px] h-[24px] object-contain" />
                   <span>{complaintPhone}</span>
@@ -468,6 +486,8 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-gray-600 hover:text-[#7cb342] transition-colors duration-300"
+                  onClick={() => handleLinkClick(privacyPolicyUrl, 'Footer: Privacy Policy', true)}
+                  data-ga-track="link"
                 >
                   Privacy Policy
                 </a>
@@ -475,6 +495,8 @@ export default function Footer() {
                 <Link
                   to={privacyPolicyUrl}
                   className="text-xs text-gray-600 hover:text-[#7cb342] transition-colors duration-300"
+                  onClick={() => handleLinkClick(privacyPolicyUrl, 'Footer: Privacy Policy', false)}
+                  data-ga-track="link"
                 >
                   Privacy Policy
                 </Link>
@@ -485,6 +507,8 @@ export default function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                   className="text-xs text-gray-600 hover:text-[#7cb342] transition-colors duration-300"
+                  onClick={() => handleLinkClick(termsOfUseUrl, 'Footer: Terms of Use', true)}
+                  data-ga-track="link"
                 >
                   Terms of Use
                 </a>
@@ -492,6 +516,8 @@ export default function Footer() {
                 <Link
                   to={termsOfUseUrl}
                   className="text-xs text-gray-600 hover:text-[#7cb342] transition-colors duration-300"
+                  onClick={() => handleLinkClick(termsOfUseUrl, 'Footer: Terms of Use', false)}
+                  data-ga-track="link"
                 >
                   Terms of Use
                 </Link>

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { newsroomService } from '../../../services/apiService';
 import { getApiBaseUrl } from '../../../config/env';
+import { trackLinkClick, trackVideoPlay } from '../../../utils/ga4';
 
 // Fallback data if CMS fails
 const fallbackPressReleases = [
@@ -329,7 +330,21 @@ export default function NewsroomSection() {
                       data-aos="fade-up"
                       data-aos-delay={index * 100}
                     >
-                      <a href={item.link} target="_blank" rel="noopener noreferrer" className="block">
+                      <a 
+                        href={item.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="block"
+                        onClick={() => {
+                          if (item.isVideo) {
+                            trackVideoPlay(item.title, item.link);
+                          } else {
+                            trackLinkClick(item.title, item.link, 'external');
+                          }
+                        }}
+                        data-ga-track={item.isVideo ? 'video' : 'link'}
+                        data-ga-label={item.title}
+                      >
                         {/* Card with background image and softer bottom gradient overlay */}
                         <div className="relative overflow-hidden rounded-lg aspect-[4/4] bg-black">
                           {item.image ? (
@@ -398,7 +413,15 @@ export default function NewsroomSection() {
                 ) : (
                   events.map((event) => (
                     <div key={event.id} className="group cursor-pointer w-full">
-                      <a href={event.link} target="_blank" rel="noopener noreferrer" className="block">
+                      <a 
+                        href={event.link} 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="block"
+                        onClick={() => trackLinkClick(event.title, event.link, 'external')}
+                        data-ga-track="link"
+                        data-ga-label={event.title}
+                      >
                         {/* Image Container */}
                         <div className="relative overflow-hidden rounded-lg aspect-[4/4] bg-black">
                           {event.image ? (
@@ -454,6 +477,9 @@ export default function NewsroomSection() {
           <a
             href="/newsroom"
             className="relative inline-flex items-center justify-center gap-2 px-8 py-3 border border-slate-600 text-slate-700 rounded-full font-semibold overflow-hidden whitespace-nowrap cursor-pointer group/btn"
+            onClick={() => trackLinkClick('Visit our Newsroom', '/newsroom', 'internal')}
+            data-ga-track="button"
+            data-ga-label="Visit our Newsroom"
           >
             <span className="relative z-10 flex items-center">
               Visit our Newsroom

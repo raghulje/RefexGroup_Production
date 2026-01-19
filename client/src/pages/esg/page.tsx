@@ -5,6 +5,7 @@ import MainLayout from '../../components/feature/MainLayout';
 import UnsSdgsSection from './components/UnsSdgsSection';
 import Footer from '../../components/feature/Footer';
 import { pagesService, sectionsService, sdgCardsService } from '../../services/apiService';
+import { trackDownload } from '../../utils/ga4';
 import PrincipledExcellenceIcon from '../svg/about/principledexcellence.svg';
 import AuthenticityIcon from '../svg/about/Authenticity.svg';
 import CustomerValueIcon from '../svg/about/CustomerValue.svg';
@@ -653,9 +654,15 @@ const ESGPage = () => {
                                     e.preventDefault();
                                     console.warn('PDF link is missing or invalid:', subPolicy);
                                     alert('PDF link is not available. Please contact the administrator.');
+                                    return;
                                   }
+                                  // Track download
+                                  const downloadUrl = subPolicy.link.startsWith('http') ? subPolicy.link : (subPolicy.link.startsWith('/uploads/') ? `${getApiBaseUrl()}${subPolicy.link}` : subPolicy.link);
+                                  trackDownload(subPolicy.label || subPolicy.title || 'ESG Policy', downloadUrl);
                                 }}
                                 className="text-gray-700 hover:text-[#50B848] flex items-center gap-3 group cursor-pointer"
+                                data-ga-track="download"
+                                data-ga-label={subPolicy.label || subPolicy.title || 'ESG Policy'}
                               >
                                 <img src={DownloadFileIcon} alt="" className="w-5 h-5" />
                                 <span>{subPolicy.label || subPolicy.title}</span>
@@ -686,9 +693,15 @@ const ESGPage = () => {
                                 e.preventDefault();
                                 console.warn('PDF link is missing or invalid:', policy);
                                 alert('PDF link is not available. Please contact the administrator.');
+                                return;
                               }
+                              // Track download
+                              const downloadUrl = policy.link.startsWith('http') ? policy.link : (policy.link.startsWith('/uploads/') ? `${getApiBaseUrl()}${policy.link}` : policy.link);
+                              trackDownload(policy.label || policy.title || 'ESG Policy', downloadUrl);
                             }}
                             className="text-gray-700 hover:text-[#50B848] flex items-center gap-3 group cursor-pointer"
+                            data-ga-track="download"
+                            data-ga-label={policy.label || policy.title || 'ESG Policy'}
                           >
                             <img src={DownloadFileIcon} alt="" className="w-5 h-5" />
                             <span>{policy.label || policy.title}</span>
@@ -861,9 +874,14 @@ const ESGPage = () => {
                             e.preventDefault();
                             console.warn('PDF link is missing or invalid:', report);
                             alert('PDF link is not available. Please contact the administrator.');
+                            return;
                           }
+                          // Track download
+                          trackDownload(report.title || report.buttonText || 'ESG Report', report.link);
                         }}
                         className="inline-flex items-center gap-2 bg-white text-gray-800 px-4 md:px-6 py-2.5 rounded-full font-semibold hover:bg-[#4CAF50] hover:text-white hover:border-2 hover:border-[#66BB6A] transition-all duration-300 cursor-pointer shadow-md text-xs md:text-sm lg:text-base"
+                        data-ga-track="download"
+                        data-ga-label={report.title || report.buttonText || 'ESG Report'}
                       >
                         <img src={SustainabilityReportIcon} alt="" className="w-5 h-5" />
                         {report.buttonText}

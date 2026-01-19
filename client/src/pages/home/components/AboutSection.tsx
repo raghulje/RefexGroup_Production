@@ -192,6 +192,12 @@ export default function AboutSection() {
                 <Link
                   to={content.buttonLink}
                     className="relative inline-block px-6 sm:px-8 py-2.5 sm:py-2 border border-slate-600 text-slate-700 rounded-full overflow-hidden text-sm sm:text-base group/btn"
+                    onClick={() => {
+                      const { trackButtonClick } = require('../../../utils/ga4');
+                      trackButtonClick(content.buttonText || 'Know More', 'About Section', content.buttonLink);
+                    }}
+                    data-ga-track="button"
+                    data-ga-label={content.buttonText || 'Know More'}
                 >
                   <span className="relative z-10">{content.buttonText}</span>
                   <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-500 ease-out group-hover/btn:scale-y-100" style={{ willChange: 'transform' }}></span>

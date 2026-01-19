@@ -3,6 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { NAV_LINKS } from '../../data/navigation';
 import { navigationService, globalSettingsService } from '../../services/apiService';
 import { getApiBaseUrl } from '../../config/env';
+import { trackLinkClick, trackButtonClick } from '../../utils/ga4';
 
 export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -279,8 +280,19 @@ export default function Header() {
   }, [location]);
 
   // Handle link clicks - scroll to top for normal links, handle hash navigation for hash links
-  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, path?: string) => {
+  const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, path?: string, label?: string) => {
     const linkPath = path || (e.currentTarget as HTMLAnchorElement).getAttribute('href') || '';
+    const linkText = label || e.currentTarget.textContent?.trim() || 'Navigation Link';
+    
+    // Determine if link is external
+    const isExternal = linkPath.startsWith('http://') || linkPath.startsWith('https://') || linkPath.startsWith('mailto:') || linkPath.startsWith('tel:');
+    
+    // Track link click
+    if (isExternal) {
+      trackLinkClick(linkText, linkPath, 'external');
+    } else {
+      trackLinkClick(linkText, linkPath, 'internal');
+    }
     
     // Check if this is a hash link (contains #)
     if (linkPath.includes('#')) {
@@ -522,7 +534,7 @@ export default function Header() {
                     to={link.path}
                     className="text-[#262626] hover:text-[#7cb342] font-semibold text-[16px]  transition-all duration-300 flex items-center gap-1 px-4 py-2"
                     style={{ pointerEvents: 'auto' }}
-                    onClick={(e) => handleLinkClick(e, link.path)}
+                    onClick={(e) => handleLinkClick(e, link.path, link.label)}
                   >
                     {link.label}
                     {link.submenu && (
@@ -582,7 +594,7 @@ export default function Header() {
                                 <Link
                                   to={link.path}
                                   className="inline-flex items-center gap-2 text-[#7cb342] font-semibold text-sm hover:gap-2.5 transition-all duration-300 group"
-                                  onClick={(e) => handleLinkClick(e, link.path)}
+                                  onClick={(e) => handleLinkClick(e, link.path, 'Know more')}
                                 >
                                   <span>Know more</span>
                                   <i className="ri-arrow-right-line group-hover:translate-x-1 transition-transform"></i>
@@ -600,7 +612,7 @@ export default function Header() {
                                       <Link
                                         to={sublink.path}
                                         className="block py-1.5 text-[#262626] hover:text-[#7cb342] transition-colors duration-200 text-[16px] font-semibold "
-                                        onClick={handleLinkClick}
+                                        onClick={(e) => handleLinkClick(e, sublink.path, sublink.label)}
                                       >
                                         {sublink.label}
                                       </Link>
@@ -614,7 +626,7 @@ export default function Header() {
                                       <Link
                                         to={sublink.path}
                                         className="block py-1.5 text-[#262626] hover:text-[#7cb342] transition-colors duration-200 text-[16px] font-semibold "
-                                        onClick={handleLinkClick}
+                                        onClick={(e) => handleLinkClick(e, sublink.path, sublink.label)}
                                       >
                                         {sublink.label}
                                       </Link>
@@ -756,7 +768,11 @@ export default function Header() {
             <Link
               to={ctaButton.url}
               className="hidden lg:inline-block relative px-6 py-2.5 border border-slate-600 text-slate-700 rounded-full font-semibold text-[14px] overflow-hidden whitespace-nowrap group/btn"
-              onClick={(e) => handleLinkClick(e, ctaButton.url)}
+              onClick={(e) => {
+                trackButtonClick(ctaButton.label, 'Header', ctaButton.url);
+                handleLinkClick(e, ctaButton.url, ctaButton.label);
+              }}
+              data-ga-track="button"
             >
               <span className="relative z-10">{ctaButton.label}</span>
               <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-[1200ms] ease-[cubic-bezier(0.16,1,0.3,1)] group-hover/btn:scale-y-100"></span>
@@ -805,7 +821,7 @@ export default function Header() {
             </button>
 
             {/* Logo */}
-            <Link to="/" className="block mb-8 mt-2" onClick={(e) => handleLinkClick(e, '/')}>
+            <Link to="/" className="block mb-8 mt-2" onClick={(e) => handleLinkClick(e, '/', 'Logo')}>
               <img
                 src={headerLogo || '/assets/logos/refex-logo.png'}
                 alt="Refex Group"
@@ -864,7 +880,7 @@ export default function Header() {
                               key={sublink.label}
                               to={sublink.path}
                               className="block px-4 py-2.5 text-gray-600 hover:text-[#50b848] hover:bg-gray-50 rounded-lg transition-all duration-200 text-sm"
-                              onClick={(e) => handleLinkClick(e, sublink.path)}
+                              onClick={(e) => handleLinkClick(e, sublink.path, sublink.label)}
                               data-ga-track="link"
                               data-ga-label={sublink.label}
                               data-ga-location="Header Navigation"
@@ -879,7 +895,7 @@ export default function Header() {
                     <Link
                       to={link.path}
                       className="block px-4 py-3 text-gray-700 hover:text-[#50b848] hover:bg-gray-50 rounded-lg transition-all duration-200 font-medium"
-                      onClick={(e) => handleLinkClick(e, link.path)}
+                      onClick={(e) => handleLinkClick(e, link.path, link.label)}
                       data-ga-track="link"
                       data-ga-label={link.label}
                       data-ga-location="Header Navigation"

@@ -113,6 +113,12 @@ export default function CareersSection() {
                 <Link
                   to={content.primaryButtonLink}
                   className="relative inline-flex items-center justify-center px-8 py-3 border border-slate-600 text-slate-700 rounded-full font-semibold overflow-hidden whitespace-nowrap group/btn"
+                  onClick={() => {
+                    const { trackButtonClick } = require('../../../utils/ga4');
+                    trackButtonClick(content.primaryButtonText || 'Explore careers', 'Careers Section', content.primaryButtonLink);
+                  }}
+                  data-ga-track="button"
+                  data-ga-label={content.primaryButtonText || 'Explore careers'}
                 >
                   <span className="relative z-10 flex items-center">
                     {content.primaryButtonText}
@@ -129,6 +135,12 @@ export default function CareersSection() {
                 <Link
                   to={content.secondaryButtonLink}
                   className="relative inline-flex items-center justify-center px-8 py-3 border border-slate-600 text-slate-700 rounded-full font-semibold overflow-hidden whitespace-nowrap group/btn"
+                  onClick={() => {
+                    const { trackButtonClick } = require('../../../utils/ga4');
+                    trackButtonClick(content.secondaryButtonText || 'Diversity at Refex', 'Careers Section', content.secondaryButtonLink);
+                  }}
+                  data-ga-track="button"
+                  data-ga-label={content.secondaryButtonText || 'Diversity at Refex'}
                 >
                   <span className="relative z-10">{content.secondaryButtonText}</span>
                   <span className="absolute inset-0 bg-black transform origin-bottom scale-y-0 transition-transform duration-500 ease-out group-hover/btn:scale-y-100" style={{ willChange: 'transform' }}></span>
